@@ -21,7 +21,7 @@ object Advanced extends App {
   /**
     "pseudo-collections": Option, Try
    */
-  def methodWhichCanReturnNull(): String = "hello, Scala"
+  def methodWhichCanReturnNull(): String = "hello, Scala  "
   val anOption = Option(methodWhichCanReturnNull()) // Some("hello, Scala")
   // option = "collection" which contains at most one element: Some(value) or None
 
