@@ -1,37 +1,60 @@
 package com.rockthejvm
 
+package object myApp {
+  val appName = "OOps In Scala Learning"
+}
+
 object ObjectOrientation extends App {
 
   // java equivalent: public static void main(String[] args)
 
-  // class and instance
+  // -------------------class and instance-------------------
   class Animal {
     // define fields
     val age: Int = 0
     // define methods
-    def eat() = println("I'm eating")
+    def eat():Unit = println("I'm eating")
   }
 
   val anAnimal = new Animal
-
-  // inheritance
-  class Dog(val name: String) extends Animal //  constructor definition
+  class WildAnimal(val name:String) {
+    def food: Unit = println("i'm non vengetarian")
+  }
+  // --------------------inheritance-----------------
+  class Dog(var name: String) extends Animal//  constructor definition,  constructor attributes are private default, make it public by val or var
+  class Tiger(override val name: String) extends WildAnimal(name)
+  class Lion(override val name:String) extends WildAnimal(name)
   val aDog = new Dog("Lassie")
+  println(new Dog("Lassie").name)
+
+  // -----------------Use Singleton Object as a factory method-----------------
+  object WildAnimal {
+
+    def apply(name: String): WildAnimal = {
+      name.toUpperCase() match {
+        case "TIGER" => new Tiger("TIGER")
+        case "LION" => new Lion("LION")
+        case _ => new WildAnimal(name)
+      }
+    }
+  }
+  val slectedAnimal = WildAnimal("dog");
+  println(s"select Wild animal ${slectedAnimal.name}")
 
   // constructor arguments are NOT fields: need to put a val before the constructor argument
-  aDog.name
+  //aDog.name
 
   // subtype polymorphism
   val aDeclaredAnimal: Animal = new Dog("Hachi")
   aDeclaredAnimal.eat() // the most derived method will be called at runtime
 
-  // abstract class
+  // ----------------abstract class------------------
   abstract class WalkingAnimal {
     val hasLegs = true // by default public, can restrict by adding protected or private
     def walk(): Unit
   }
 
-  // "interface" = ultimate abstract type
+  // --------------------"interface" = ultimate abstract type-------------
   trait Carnivore {
     def eat(animal: Animal): Unit
   }
@@ -40,7 +63,7 @@ object ObjectOrientation extends App {
     def ?!(thought: String): Unit // valid method name
   }
 
-  // single-class inheritance, multi-trait "mixing"
+  // -----------------single-class inheritance, multi-trait "mixing"-----------------
   class Crocodile extends Animal with Carnivore with Philosopher {
     override def eat(animal: Animal): Unit = println("I am eating you, animal!")
 
@@ -96,10 +119,28 @@ object ObjectOrientation extends App {
    - serialization
    - companion with apply
    - pattern matching
+   - defaultly comes with companian Object, hashcode, equals,copy, apply and toString methods
   */
   case class Person(name: String, age: Int)
   // may be constructed without new
   val bob = Person("Bob", 54) // Person.apply("Bob", 54)
+  //--------------Type alias------------------------
+  type VisitedAnimal = (WildAnimal,Boolean)
+  val  visitedAnimal = new VisitedAnimal(slectedAnimal,true)
+
+  //--------------implicit Class--------------------
+  // assuming we don't have access to WildAnimal class, we want to one more method to that class
+  //  one way to achive is inheritance
+  // another way - achieve by implicit class
+  implicit class Roar(amimal:WildAnimal) {
+    def vocal(): Unit = {
+      println("i will Roar to express my language")
+    }
+  }
+  slectedAnimal.vocal()
+
+  //------------------------ package Object------------------
+  // it and its members are access to all class, object etc.. in their package
 
   // exceptions
   try {
